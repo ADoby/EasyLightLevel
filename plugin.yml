@@ -1,0 +1,15 @@
+name: EasyLightLevel
+main: easylightlevel.EasyLightLevel
+version: 1.0
+dev-url: http://http://dev.bukkit.org/server-mods/easylightlevel/
+description: Find out light level of blocks
+commands:
+  easylightlevel:
+    description: EasyLightLevel Command
+    aliases: ell
+permissions:
+  easylightlevel.show:
+    description: Permission to show with item
+  easylightlevel.area:
+    description: Permission to show area
+    default: op

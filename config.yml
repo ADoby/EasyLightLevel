@@ -1,0 +1,6 @@
+defaults:
+  left_click_item: 50
+  show_area_radius: 4
+  show_area_height: 2
+  show_hologram_seconds: 2
+  show_area_hologram_seconds: 4
