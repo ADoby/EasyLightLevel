@@ -11,11 +11,63 @@ import com.dsh105.holoapi.HoloAPI;
 import com.dsh105.holoapi.api.Hologram;
 import com.dsh105.holoapi.api.HologramFactory;
 
+import easylightlevel.EasyLightLevel.INFO_STYLE_ENUM;
+
 public class HologramText {
 	
 	Hologram hologram;
 	
-	public HologramText(JavaPlugin plugin, Block block, int seconds){
+	private String getText(int infoType, int lightLevel){
+		String value = "";
+		
+		INFO_STYLE_ENUM infoStyle = null;
+		
+		try{
+			infoStyle = INFO_STYLE_ENUM.values()[infoType];
+		}catch(IndexOutOfBoundsException e){
+			return String.valueOf(lightLevel);
+		}
+		
+		switch(infoStyle){
+			case NUMBER:
+				value = String.valueOf(lightLevel);
+				break;
+			case TEXT:
+				if(lightLevel <= 7){
+					value = "Unsafe";
+				}else if(lightLevel >= 8){
+					value = "Safe";
+				}
+				break;
+			case NUMBERTEXT:
+				if(lightLevel <= 7){
+					value = String.valueOf(lightLevel) + ": Unsafe";
+				}else if(lightLevel >= 8){
+					value = String.valueOf(lightLevel) + ": Safe";
+				}
+				break;
+			case TEXTNUMBER:
+				if(lightLevel <= 7){
+					value = "Unsafe: " + String.valueOf(lightLevel);
+				}else if(lightLevel >= 8){
+					value = "Safe: " + String.valueOf(lightLevel);
+				}
+				break;
+			case BLOCK:
+				value = String.valueOf(lightLevel);
+				break;
+			case BLOCKWOOL:
+				value = String.valueOf(lightLevel);
+				break;
+			default:
+				value = String.valueOf(lightLevel);
+				break;
+		}		
+		
+		return value;
+	}
+	
+	public HologramText(JavaPlugin plugin, Block block, int infoType, int seconds){
 		
 		BlockState state = block.getState();
 		Location position = block.getLocation();
@@ -25,14 +77,12 @@ public class HologramText {
 		int lightLevel = state.getLightLevel();
 		
 		ChatColor color = ChatColor.WHITE;
-		String text = "Normal"; 
+		String text = getText(infoType, lightLevel);
 		
 		if(lightLevel <= 7){
 			color = ChatColor.RED;
-			text = "Unsave";
 		}else if(lightLevel >= 8){
 			color = ChatColor.GREEN;
-			text = "Save";
 		}
 		
 		hologram = new HologramFactory(plugin)

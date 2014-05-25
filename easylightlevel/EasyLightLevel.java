@@ -26,6 +26,15 @@ import easylightlevel.PermissionHandlerWrapper;
 
 public class EasyLightLevel extends JavaPlugin implements CommandExecutor, Listener {
 
+	public enum INFO_STYLE_ENUM{
+		NUMBER,
+		TEXT,
+		NUMBERTEXT,
+		TEXTNUMBER,
+		BLOCK,
+		BLOCKWOOL
+	}
+	
 	private static EasyLightLevel plugin;
 	private static IPermissionHandler permissions;
 	
@@ -45,6 +54,9 @@ public class EasyLightLevel extends JavaPlugin implements CommandExecutor, Liste
 	
 	private int SHOW_AREA_HOLOGRAM_SECONDS = 3;
 	private String SHOW_AREA_HOLOGRAM_SECONDS_STRING = "show_area_hologram_seconds";
+	
+	private int INFO_STYLE = 0;
+	private String INFO_STYLE_STRING = "info_style";
 	
 	public void onEnable() {
 		plugin = this;
@@ -99,6 +111,17 @@ public class EasyLightLevel extends JavaPlugin implements CommandExecutor, Liste
 		
 		this.SHOW_AREA_HOLOGRAM_SECONDS = getConfig().getInt(
 				DEFAULT_SECTION_STRING + "." + SHOW_AREA_HOLOGRAM_SECONDS_STRING);
+		
+		this.INFO_STYLE = getConfig().getInt(
+				DEFAULT_SECTION_STRING + "." + INFO_STYLE_STRING);
+		
+		//Debug, because BlockChange is buggy will destroy world
+		if(INFO_STYLE == 4 || INFO_STYLE == 5){
+			INFO_STYLE = 0;
+		}
+		if(INFO_STYLE < 0 || INFO_STYLE > 3){
+			INFO_STYLE = 0;
+		}
 	}
 	
 	public void Reload(){
@@ -146,6 +169,40 @@ public class EasyLightLevel extends JavaPlugin implements CommandExecutor, Liste
 		}
 	}
 	
+	private void ShowInfo(Block block, Block blockabove, int seconds){
+		INFO_STYLE_ENUM infoStyle = null;
+		
+		try{
+			infoStyle = INFO_STYLE_ENUM.values()[INFO_STYLE];
+		}catch(IndexOutOfBoundsException e){
+			log("Check INFO_STYLE setting, " + INFO_STYLE + " is not a correct style number");
+			return;
+		}
+		
+		switch(infoStyle){
+			case NUMBER:
+				new HologramText(plugin, blockabove, INFO_STYLE, seconds);
+				break;
+			case TEXT:
+				new HologramText(plugin, blockabove, INFO_STYLE, seconds);
+				break;
+			case NUMBERTEXT:
+				new HologramText(plugin, blockabove, INFO_STYLE, seconds);
+				break;
+			case TEXTNUMBER:
+				new HologramText(plugin, blockabove, INFO_STYLE, seconds);
+				break;
+			case BLOCK:
+				new BlockChanger(plugin, block, INFO_STYLE, seconds);
+				break;
+			case BLOCKWOOL:
+				new BlockChanger(plugin, block, INFO_STYLE, seconds);
+				break;
+			default:
+				break;
+		}
+	}
+	
 	private void ShowLightLevelAtBlock(Block block){
 		Location position = block.getLocation();
 		
@@ -154,7 +211,7 @@ public class EasyLightLevel extends JavaPlugin implements CommandExecutor, Liste
 		
 		if(block.getType().isSolid()){
 			if(blockabove.getType() == Material.AIR){
-				new HologramText(plugin, blockabove, SHOW_HOLOGRAM_SECONDS);
+				ShowInfo(block, blockabove, SHOW_HOLOGRAM_SECONDS);
 			}
 		}
 	}
@@ -179,7 +236,7 @@ public class EasyLightLevel extends JavaPlugin implements CommandExecutor, Liste
 					
 					if(block.getType().isSolid()){
 						if(blockabove.getType() == Material.AIR){
-							new HologramText(plugin, blockabove, SHOW_AREA_HOLOGRAM_SECONDS);
+							ShowInfo(block, blockabove, SHOW_AREA_HOLOGRAM_SECONDS);
 							amount++;
 						}
 					}
