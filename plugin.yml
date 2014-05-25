@@ -7,6 +7,8 @@ commands:
   easylightlevel:
     description: EasyLightLevel Command
     aliases: ell
+  easylightlevel infotype <number>:
+    description: Changes the style for the info
 permissions:
   easylightlevel.show:
     description: Permission to show with item

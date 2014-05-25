@@ -4,4 +4,4 @@ defaults:
   show_area_height: 2
   show_hologram_seconds: 1
   show_area_hologram_seconds: 2
-  info_style: 0
+infostylesettings: {}
